@@ -1,0 +1,70 @@
+a. Customers
+INSERT INTO Customers (FirstName, LastName, Email, Phone, Address)
+VALUES
+('John', 'Doe', 'john.doe@example.com', '123-456-7890', '123 Main St, New York, NY'),
+('Jane', 'Smith', 'jane.smith@example.com', '234-567-8901', '456 Maple St, Chicago, IL'),
+('Michael', 'Johnson', 'michael.j@example.com', '345-678-9012', '789 Pine St, Boston, MA'),
+('Emily', 'Davis', 'emily.d@example.com', '456-789-0123', '321 Oak St, San Francisco, CA'),
+('Daniel', 'Wilson', 'daniel.w@example.com', '567-890-1234', '987 Birch St, Seattle, WA'),
+('Sophia', 'Martinez', 'sophia.m@example.com', '678-901-2345', '654 Cedar St, Austin, TX'),
+('David', 'Anderson', 'david.a@example.com', '789-012-3456', '852 Elm St, Denver, CO'),
+('Olivia', 'Thomas', 'olivia.t@example.com', '890-123-4567', '369 Spruce St, Miami, FL'),
+('James', 'Garcia', 'james.g@example.com', '901-234-5678', '741 Willow St, Atlanta, GA'),
+('Isabella', 'Lopez', 'isabella.l@example.com', '012-345-6789', '159 Redwood St, Dallas, TX');
+GO
+b. Products
+INSERT INTO Products (ProductName, Description, Price)
+VALUES
+('Smartphone X', 'Latest model with high resolution camera', 699.99),
+('Laptop Pro', '15-inch, 16GB RAM, 512GB SSD', 1199.50),
+('Wireless Earbuds', 'Noise-cancelling, long battery life', 149.00),
+('Smartwatch 5', 'Fitness tracking and notifications', 249.99),
+('Gaming Console', 'Next-gen console with 1TB storage', 499.00),
+('Bluetooth Speaker', 'Portable and waterproof', 99.95),
+('Tablet Air', '10-inch display, 64GB storage', 329.00),
+('Drone 4K', '4K camera with GPS tracking', 799.00),
+('VR Headset', 'Immersive virtual reality experience', 349.99),
+('Power Bank 20K', '20000mAh, fast charging', 49.99);
+GO
+c. Orders
+INSERT INTO Orders (CustomerID, OrderDate, TotalAmount)
+VALUES
+(1, '2025-03-01', 849.98),
+(2, '2025-03-02', 1199.50),
+(3, '2025-03-03', 299.00),
+(4, '2025-03-04', 499.00),
+(5, '2025-03-05', 999.95),
+(6, '2025-03-06', 329.00),
+(7, '2025-03-07', 1148.99),
+(8, '2025-03-08', 799.00),
+(9, '2025-03-09', 349.99),
+(10, '2025-03-10', 199.98);
+GO
+d.OrderDetails Table
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity)
+VALUES
+(1, 1, 1), -- Smartphone X
+(1, 10, 3), -- Power Bank 20K
+(2, 2, 1), -- Laptop Pro
+(3, 4, 1), -- Smartwatch 5
+(4, 5, 1), -- Gaming Console
+(5, 3, 2), -- Wireless Earbuds
+(6, 7, 1), -- Tablet Air
+(7, 9, 1), -- VR Headset
+(8, 8, 1), -- Drone 4K
+(9, 6, 2); -- Bluetooth Speaker
+GO
+e.Inventory Table
+INSERT INTO Inventory (ProductID, QuantityInStock, LastStockUpdate)
+VALUES
+(1, 50, GETDATE()),
+(2, 30, GETDATE()),
+(3, 100, GETDATE()),
+(4, 40, GETDATE()),
+(5, 20, GETDATE()),
+(6, 60, GETDATE()),
+(7, 25, GETDATE()),
+(8, 15, GETDATE()),
+(9, 35, GETDATE()),
+(10, 80, GETDATE());
+GO
