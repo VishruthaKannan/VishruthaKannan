@@ -1,0 +1,577 @@
+CREATE TABLE customer (
+    customer_id INT PRIMARY KEY,
+    cust_name VARCHAR(50),
+    city VARCHAR(50),
+    grade INT,
+    salesman_id INT
+);
+
+INSERT INTO customer (customer_id, cust_name, city, grade, salesman_id)
+VALUES 
+    (3002, 'Nick Rimando', 'New York', 100, 5001),
+    (3007, 'Brad Davis', 'New York', 200, 5001),
+    (3005, 'Graham Zusi', 'California', 200, 5002),
+    (3008, 'Julian Green', 'London', 300, 5002),
+    (3004, 'Fabian Johnson', 'Paris', 300, 5006),
+    (3009, 'Geoff Cameron', 'Berlin', 100, 5003),
+    (3003, 'Jozy Altidor', 'Moscow', 200, 5007),
+    (3001, 'Brad Guzan', 'London', NULL, 5005);
+
+-- Create table for salesman
+CREATE TABLE salesman (
+    salesman_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    city VARCHAR(50),
+    commission DECIMAL(5, 2)
+);
+
+INSERT INTO salesman (salesman_id, name, city, commission)
+VALUES
+    (5001, 'James Hoog', 'New York', 0.15),
+    (5002, 'Nail Knite', 'Paris', 0.13),
+    (5005, 'Pit Alex', 'London', 0.11),
+    (5006, 'Mc Lyon', 'Paris', 0.14),
+    (5007, 'Paul Adam', 'Rome', 0.13),
+    (5003, 'Lauson Hen', 'San Jose', 0.12);
+
+
+CREATE TABLE orderz (
+    ord_no INT PRIMARY KEY,
+    purch_amt DECIMAL(10, 2),
+    ord_date DATE,
+    customer_id INT,
+    salesman_id INT
+);
+INSERT INTO orderz (ord_no, purch_amt, ord_date, customer_id, salesman_id)
+VALUES 
+    (70001, 150.5, '2012-10-05', 3005, 5002),
+    (70009, 270.65, '2012-09-10', 3001, 5005),
+    (70002, 65.26, '2012-10-05', 3002, 5001),
+    (70004, 110.5, '2012-08-17', 3009, 5003),
+    (70007, 948.5, '2012-09-10', 3005, 5002),
+    (70005, 2400.6, '2012-07-27', 3007, 5001),
+    (70008, 5760, '2012-09-10', 3002, 5001),
+    (70010, 1983.43, '2012-10-10', 3004, 5006),
+    (70003, 2480.4, '2012-10-10', 3009, 5003);
+
+CREATE TABLE emp_department (
+    dpt_code INT PRIMARY KEY,
+    dpt_name VARCHAR(50),
+    dpt_allotment INT
+);
+
+-- Create table for emp_details
+CREATE TABLE emp_details (
+    emp_idno INT PRIMARY KEY,
+    emp_fname VARCHAR(50),
+    emp_lname VARCHAR(50),
+    emp_dept INT,
+    FOREIGN KEY (emp_dept) REFERENCES emp_department(dpt_code)
+);
+
+CREATE TABLE company_mast (
+    com_id INT PRIMARY KEY,
+    com_name VARCHAR(50)
+);
+
+
+CREATE TABLE item_mast (
+    pro_id INT PRIMARY KEY,
+    pro_name VARCHAR(100),
+    pro_price DECIMAL(10, 2),
+    pro_com INT,
+    FOREIGN KEY (pro_com) REFERENCES company_mast(com_id)
+);
+
+1.
+SELECT s.name AS Salesman, c.cust_name, s.city
+FROM salesman s
+JOIN customer c
+ON s.city = c.city;
+
+2.
+SELECT o.ord_no, o.purch_amt, c.cust_name, c.city
+FROM orders o
+JOIN customer c
+ON o.customer_id = c.customer_id
+WHERE o.purch_amt BETWEEN 500 AND 2000;
+
+3.
+SELECT c.cust_name, c.city, s.name AS Salesman, s.commission
+FROM customer c
+JOIN salesman s
+ON c.salesman_id = s.salesman_id;
+
+4.
+SELECT c.cust_name, c.city AS customer_city, s.name AS Salesman, s.commission
+FROM customer c
+JOIN salesman s
+ON c.salesman_id = s.salesman_id
+WHERE s.commission > 0.12;
+
+5.
+SELECT c.cust_name, 
+       c.city AS customer_city, 
+       s.name AS Salesman, 
+       s.city AS salesman_city, 
+       s.commission
+FROM customer c
+JOIN salesman s
+ON c.salesman_id = s.salesman_id
+WHERE s.city <> c.city
+AND s.commission > 0.12;
+
+6.
+SELECT o.ord_no, 
+       o.ord_date, 
+       o.purch_amt, 
+       c.cust_name, 
+       c.grade, 
+       s.name AS Salesman, 
+       s.commission
+FROM orders o
+JOIN customer c
+ON o.customer_id = c.customer_id
+JOIN salesman s
+ON o.salesman_id = s.salesman_id;
+
+7.
+SELECT o.ord_no, 
+       o.purch_amt, 
+       o.ord_date, 
+       c.cust_name, 
+       c.city, 
+       c.grade, 
+       s.name AS salesman_name, 
+       s.city AS salesman_city, 
+       s.commission
+FROM orders o
+JOIN customer c
+ON o.customer_id = c.customer_id
+JOIN salesman s
+ON o.salesman_id = s.salesman_id;
+
+8.
+SELECT 
+    c.cust_name AS customer_name,
+    c.city AS customer_city,
+    c.grade,
+    s.name AS salesman_name,
+    s.city AS salesman_city
+FROM 
+    customer c
+JOIN 
+    salesman s 
+ON 
+    c.salesman_id = s.salesman_id
+ORDER BY 
+    c.customer_id ASC;
+
+9.
+SELECT 
+    c.cust_name AS customer_name,
+    c.city AS customer_city,
+    c.grade,
+    s.name AS salesman_name,
+    s.city AS salesman_city
+FROM 
+    customer c
+JOIN 
+    salesman s 
+ON 
+    c.salesman_id = s.salesman_id
+WHERE 
+    c.grade < 300 OR c.grade IS NULL
+ORDER BY 
+    c.customer_id ASC;
+
+10.
+SELECT 
+    c.cust_name AS customer_name,
+    c.city AS customer_city,
+    o.ord_no AS order_number,
+    o.ord_date AS order_date,
+    o.purch_amt AS order_amount
+FROM 
+    customer c
+LEFT JOIN 
+    orders o 
+ON 
+    c.customer_id = o.customer_id
+ORDER BY 
+    o.ord_date ASC, 
+    c.customer_id ASC;
+
+11.
+SELECT 
+    c.cust_name AS customer_name,
+    c.city AS customer_city,
+    o.ord_no AS order_number,
+    o.ord_date AS order_date,
+    o.purch_amt AS order_amount,
+    s.name AS salesman_name,
+    s.commission AS commission,
+    CASE
+        WHEN o.salesman_id IS NULL THEN 'No order placed'
+        WHEN o.salesman_id = c.salesman_id THEN 'Order placed through assigned salesman'
+        ELSE 'Order placed through a different salesman'
+    END AS order_status
+FROM 
+    customer c
+LEFT JOIN 
+    orders o 
+ON 
+    c.customer_id = o.customer_id
+LEFT JOIN 
+    salesman s 
+ON 
+    o.salesman_id = s.salesman_id
+ORDER BY 
+    c.customer_id ASC, 
+    o.ord_date ASC;
+
+12.
+SELECT 
+    s.salesman_id,
+    s.name AS salesman_name,
+    s.city AS salesman_city,
+    s.commission,
+    CASE
+        WHEN c.salesman_id IS NULL THEN 'No customers assigned'
+        ELSE 'Has customers'
+    END AS status
+FROM 
+    salesman s
+LEFT JOIN 
+    customer c 
+ON 
+    s.salesman_id = c.salesman_id
+GROUP BY 
+    s.salesman_id, s.name, s.city, s.commission, c.salesman_id
+ORDER BY 
+    s.salesman_id ASC;
+
+13.
+SELECT 
+    s.salesman_id,
+    s.name AS salesman_name,
+    s.city AS salesman_city,
+    s.commission,
+    c.customer_id,
+    c.cust_name,
+    c.city AS customer_city,
+    c.grade,
+    o.ord_no,
+    o.ord_date,
+    o.purch_amt
+FROM 
+    salesman s
+LEFT JOIN 
+    customer c 
+ON 
+    s.salesman_id = c.salesman_id
+LEFT JOIN 
+    orders o 
+ON 
+    c.customer_id = o.customer_id
+ORDER BY 
+    s.salesman_id ASC, 
+    c.customer_id ASC,
+    o.ord_date ASC;
+
+14.
+SELECT 
+    s.salesman_id,
+    s.name AS salesman_name,
+    s.city AS salesman_city,
+    s.commission,
+    c.customer_id,
+    c.cust_name,
+    c.city AS customer_city,
+    c.grade,
+    o.ord_no,
+    o.ord_date,
+    o.purch_amt
+FROM 
+    salesman s
+LEFT JOIN 
+    customer c 
+ON 
+    s.salesman_id = c.salesman_id
+LEFT JOIN 
+    orders o 
+ON 
+    c.customer_id = o.customer_id 
+    AND (o.purch_amt >= 2000 OR o.ord_no IS NULL)
+WHERE 
+    c.grade IS NOT NULL OR c.customer_id IS NULL 
+ORDER BY 
+    s.salesman_id ASC,
+    c.customer_id ASC,
+    o.ord_date ASC;
+
+15.
+SELECT 
+    COALESCE(c.cust_name, 'Unknown') AS cust_name,
+    COALESCE(c.city, 'Unknown') AS city,
+    o.ord_no,
+    o.ord_date,
+    o.purch_amt
+FROM 
+    orders o
+LEFT JOIN 
+    customer c
+ON 
+    o.customer_id = c.customer_id
+WHERE 
+    c.customer_id IS NOT NULL  -- Orders placed by customers on the list
+    OR o.customer_id NOT IN (SELECT customer_id FROM customer) 
+ORDER BY 
+    c.cust_name ASC,
+    o.ord_date ASC;
+
+16.
+SELECT 
+    COALESCE(c.cust_name, 'Unknown') AS cust_name,
+    COALESCE(c.city, 'Unknown') AS city,
+    o.ord_no,
+    o.ord_date,
+    o.purch_amt
+FROM 
+    orders o
+LEFT JOIN 
+    customer c
+ON 
+    o.customer_id = c.customer_id
+WHERE 
+    -- Condition 1: Customers on the list with a grade who placed orders
+    (c.grade IS NOT NULL AND c.grade > 0)
+    OR
+    -- Condition 2: Orders placed by customers not on the list or without a grade
+    (c.customer_id IS NULL OR c.grade IS NULL)
+ORDER BY 
+    c.cust_name ASC,
+    o.ord_date ASC;
+
+17.
+SELECT 
+    s.salesman_id,
+    s.name AS salesman_name,
+    s.city AS salesman_city,
+    s.commission,
+    c.customer_id,
+    c.cust_name,
+    c.city AS customer_city,
+    c.grade
+FROM 
+    salesman s
+CROSS JOIN 
+    customer c
+ORDER BY 
+    s.salesman_id, c.customer_id;
+
+18.
+SELECT 
+    s.salesman_id,
+    s.name AS salesman_name,
+    s.city AS salesman_city,
+    s.commission,
+    c.customer_id,
+    c.cust_name,
+    c.city AS customer_city,
+    c.grade
+FROM 
+    salesman s
+CROSS JOIN 
+    customer c
+WHERE 
+    s.city = c.city
+ORDER BY 
+    s.salesman_id, c.customer_id;
+
+19.
+SELECT 
+    s.salesman_id,
+    s.name AS salesman_name,
+    s.city AS salesman_city,
+    s.commission,
+    c.customer_id,
+    c.cust_name,
+    c.city AS customer_city,
+    c.grade
+FROM 
+    salesman s
+CROSS JOIN 
+    customer c
+WHERE 
+    s.city IS NOT NULL
+    AND c.grade IS NOT NULL
+ORDER BY 
+    s.salesman_id, c.customer_id;
+
+20.
+SELECT 
+    s.salesman_id,
+    s.name AS salesman_name,
+    s.city AS salesman_city,
+    s.commission,
+    c.customer_id,
+    c.cust_name,
+    c.city AS customer_city,
+    c.grade
+FROM 
+    salesman s
+CROSS JOIN 
+    customer c
+WHERE 
+    s.city IS NOT NULL              -- Salesman must belong to a city
+    AND c.grade IS NOT NULL         -- Customer must have a grade
+    AND s.city <> c.city            -- Salesman and customer should not belong to the same city
+ORDER BY 
+    s.salesman_id, c.customer_id;
+
+21.
+SELECT 
+    i.pro_id,
+    i.pro_name,
+    i.pro_price,
+    i.pro_com,
+    c.com_name
+FROM 
+    item_mast i
+INNER JOIN 
+    company_mast c
+ON 
+    i.pro_com = c.com_id
+ORDER BY 
+    i.pro_id;
+
+22.
+SELECT 
+    i.pro_name AS item_name,
+    i.pro_price AS price,
+    c.com_name AS company_name
+FROM 
+    item_mast i
+INNER JOIN 
+    company_mast c
+ON 
+    i.pro_com = c.com_id
+ORDER BY 
+    i.pro_name;
+
+23.
+SELECT 
+    c.com_name AS company_name,
+    ROUND(AVG(i.pro_price), 2) AS avg_price
+FROM 
+    item_mast i
+INNER JOIN 
+    company_mast c
+ON 
+    i.pro_com = c.com_id
+GROUP BY 
+    c.com_name
+ORDER BY 
+    avg_price DESC;
+
+24.
+SELECT 
+    c.com_name AS company_name,
+    ROUND(AVG(i.pro_price), 2) AS avg_price
+FROM 
+    item_mast i
+INNER JOIN 
+    company_mast c
+ON 
+    i.pro_com = c.com_id
+GROUP BY 
+    c.com_name
+HAVING 
+    AVG(i.pro_price) >= 350
+ORDER BY 
+    avg_price DESC;
+
+25.
+SELECT 
+    i.pro_name AS product_name,
+    i.pro_price AS product_price,
+    c.com_name AS company_name
+FROM 
+    item_mast i
+INNER JOIN 
+    company_mast c 
+ON 
+    i.pro_com = c.com_id
+WHERE 
+    i.pro_price = (
+        SELECT 
+            MAX(im.pro_price)
+        FROM 
+            item_mast im
+        WHERE 
+            im.pro_com = i.pro_com
+    );
+
+26.
+SELECT 
+    e.emp_idno AS employee_id,
+    e.emp_fname AS first_name,
+    e.emp_lname AS last_name,
+    e.emp_dept AS department_code,
+    d.dpt_name AS department_name,
+    d.dpt_allotment AS department_allotment
+FROM 
+    emp_details e
+INNER JOIN 
+    emp_department d
+ON 
+    e.emp_dept = d.dpt_code;
+
+27.
+SELECT 
+    e.emp_fname AS first_name,
+    e.emp_lname AS last_name,
+    d.dpt_name AS department_name,
+    d.dpt_allotment AS sanction_amount
+FROM 
+    emp_details e
+INNER JOIN 
+    emp_department d
+ON 
+    e.emp_dept = d.dpt_code;
+
+28.
+SELECT 
+    e.emp_fname AS first_name,
+    e.emp_lname AS last_name
+FROM 
+    emp_details e
+INNER JOIN 
+    emp_department d
+ON 
+    e.emp_dept = d.dpt_code
+WHERE 
+    d.dpt_allotment > 50000;
+
+29.
+SELECT 
+    d.dpt_name
+FROM 
+    emp_department d
+INNER JOIN 
+    emp_details e
+ON 
+    d.dpt_code = e.emp_dept
+GROUP BY 
+    d.dpt_name
+HAVING 
+    COUNT(e.emp_idno) > 2;
+
+
+
+
+
+
+
+
